@@ -1129,6 +1129,10 @@ export default function App() {
 
   const totalPages = 1;
 
+  const profiles = ["All", ...new Set(Object.values(internships).map(i => i.profile_name).filter(Boolean))];
+  const locations = ["All", ...new Set(Object.values(internships).map(i => i.location_names[0]).filter(Boolean))];
+
+
   return (
     <div className="bg-[#f8f8f8] text-[#333333] min-h-screen flex flex-col">
       <Navbar />
@@ -1152,10 +1156,7 @@ export default function App() {
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-8">
           {/* Filters sidebar (sticky on large screens) */}
           <div className="hidden md:block">
-            <FiltersSidebar
-              minStipend={minStipend}
-              setMinStipend={setMinStipend}
-            />
+            <FiltersSidebar profiles={profiles} locations={locations} />
           </div>
 
           {/* Internships list */}
