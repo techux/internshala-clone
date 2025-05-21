@@ -1130,7 +1130,7 @@ export default function App() {
   const totalPages = 1;
 
   return (
-    <div className="bg-[#f8f8f8] min-h-screen flex flex-col">
+    <div className="bg-[#f8f8f8] text-[#333333] min-h-screen flex flex-col">
       <Navbar />
 
       <div className="w-[65%] mx-auto flex-1">
@@ -1144,7 +1144,7 @@ export default function App() {
           <h1 className="text-xl font-semibold mb-2">
             {Object.keys(internships).length} Total Internships
           </h1>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm mb-6">
             Latest Summer Internships in India
           </p>
         </div>
