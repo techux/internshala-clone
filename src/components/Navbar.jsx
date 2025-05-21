@@ -35,7 +35,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden border-t px-4 py-2 space-y-2">
           <a

@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { Funnel } from "lucide-react";
 
-export default function FiltersSidebar({ profiles , locations}) {
-  const [profile, setProfile] = useState("");
-  const [location, setLocation] = useState("");
-  const [duration, setDuration] = useState(0);
-
+export default function FiltersSidebar({
+  profiles,
+  locations,
+  profile,
+  setProfile,
+  location,
+  setLocation,
+  duration,
+  setDuration,
+}) {
   return (
     <aside className="w-[1000px] md:w-64 p-4 space-y-6 bg-white border rounded-xl shadow-sm">
-      <h2 className="text-lg font-semibold text-center gap-2">
-        <span className="i-lucide-filter" /> Filters
+      <h2 className="text-lg font-semibold text-center flex items-center justify-center gap-2">
+        <Funnel className="w-4 h-4 text-[#006bc2]" />
+        Filters
       </h2>
 
       <div className="space-y-4 text-sm">
@@ -31,7 +37,7 @@ export default function FiltersSidebar({ profiles , locations}) {
           <label className="block font-medium">Location</label>
           <select
             className="w-full border rounded px-3 py-2"
-            value={profile}
+            value={location}
             onChange={(e) => setLocation(e.target.value)}
           >
             {locations.map((location, index) => (

@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import FiltersSidebar from "./components/FiltersSidebar";
 import InternshipCard from "./components/InternshipCard";
-import Pagination from "./components/Pagination";
-import axios from "axios";
 
 // Internship data from API
-const internshipData =   [{
+const internshipData = [
+  {
     internships_meta: {
       65381: {
         id: 65381,
@@ -1098,16 +1097,20 @@ const internshipData =   [{
     internship_ids: [
       65532, 65531, 65381, 65524, 65522, 65517, 65515, 65454, 65501, 65504,
     ],
-  }]
+  },
+];
 
 // async function fetchInternships() {
 // fetch or axios cause CORS or similar issue, so I use hardcoded JSON from the same API
 // const response = await axios.get("https://internshala.com/hiring/search");
 // return response.data;
+// }
 
 export default function App() {
-  const [minStipend, setMinStipend] = useState(0);
-  const [page, setPage] = useState(1);
+
+  const [profile, setProfile] = useState("");
+  const [location, setLocation] = useState("");
+  const [duration, setDuration] = useState(0);
 
   const [internships, setInternships] = useState([]);
   useEffect(() => {
@@ -1119,19 +1122,52 @@ export default function App() {
   //   fetchInternships().then((data) => setInternships(data));
   // }, []);
 
-  // Basic filtering (dummy) – filter by min stipend assuming upper bound is like "8,000 - 10,000 /month"
-  // const filtered = internships.filter((i) => {
-  //   // take first number of stipend range
-  //   const match = i.stipend.match(/([\d,]+)/);
-  //   const first = match ? parseInt(match[1].replace(/,/g, ""), 10) : 0;
-  //   return first >= minStipend;
-  // });
 
-  const totalPages = 1;
+  function filterInternships({ profile, location, duration }) {
+    return Object.values(internships).filter((i) => {
+      const matchesProfile =
+        profile && profile !== "All"
+          ? i.profile_name?.toLowerCase().includes(profile.toLowerCase())
+          : true;
 
-  const profiles = ["All", ...new Set(Object.values(internships).map(i => i.profile_name).filter(Boolean))];
-  const locations = ["All", ...new Set(Object.values(internships).map(i => i.location_names[0]).filter(Boolean))];
+      const matchesLocation =
+        location && location !== "All"
+          ? i.location_names?.some((loc) =>
+              loc.toLowerCase().includes(location.toLowerCase())
+            )
+          : true;
 
+      const matchesDuration =
+        duration && duration !== "0"
+          ? i.duration?.toLowerCase() === duration.toLowerCase()
+          : true;
+
+      return matchesProfile && matchesLocation && matchesDuration;
+    });
+  }
+
+  const profiles = [
+    "All",
+    ...new Set(
+      Object.values(internships)
+        .map((i) => i.profile_name)
+        .filter(Boolean)
+    ),
+  ];
+  const locations = [
+    "All",
+    ...new Set(
+      Object.values(internships)
+        .map((i) => i.location_names[0])
+        .filter(Boolean)
+    ),
+  ];
+
+  const filteredInternships = filterInternships({
+    profile,
+    location,
+    duration,
+  });
 
   return (
     <div className="bg-[#f8f8f8] text-[#333333] min-h-screen flex flex-col">
@@ -1148,33 +1184,36 @@ export default function App() {
           <h1 className="text-xl font-semibold mb-2">
             {Object.keys(internships).length} Total Internships
           </h1>
-          <p className="text-sm mb-6">
-            Latest Summer Internships in India
-          </p>
+          <p className="text-sm mb-6">Latest Summer Internships in India</p>
         </div>
 
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-8">
-          {/* Filters sidebar (sticky on large screens) */}
           <div className="hidden md:block">
-            <FiltersSidebar profiles={profiles} locations={locations} />
+            <FiltersSidebar
+              profiles={profiles}
+              locations={locations}
+              profile={profile}
+              setProfile={setProfile}
+              location={location}
+              setLocation={setLocation}
+              duration={duration}
+              setDuration={setDuration}
+            />
           </div>
 
-          {/* Internships list */}
           <section>
-            {/* <div>
-            <h1 className="text-3xl font-bold mb-4">Internships</h1>
-            <p className="text-sm text-gray-500 mb-2">
-              Showing {filtered.length} internships
-            </p>
-          </div> */}
+            <div>
+              <p className="text-sm text-gray-500 mb-2">
+                Showing {filteredInternships.length} internships
+              </p>
+            </div>
 
             <div className="space-y-4">
-              {Object.values(internships).map((item, idx) => (
-                <InternshipCard key={idx} item={{item}} />
+              {Object.values(filteredInternships).map((item, idx) => (
+                <InternshipCard key={idx} item={item} />
               ))}
             </div>
 
-            {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} /> */}
           </section>
         </main>
       </div>
